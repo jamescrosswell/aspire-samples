@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
+using Sentry.OpenTelemetry;
 
 namespace Microsoft.Extensions.Hosting;
 
@@ -13,8 +14,10 @@ public static class Extensions
 {
     public static IHostApplicationBuilder AddServiceDefaults(this IHostApplicationBuilder builder)
     {
-        builder.ConfigureOpenTelemetry();
+        builder.ConfigureSentry(); // <-- We configure this first to get crash reporting as soon as possible
 
+        builder.ConfigureOpenTelemetry();
+        
         builder.AddDefaultHealthChecks();
 
         builder.Services.AddServiceDiscovery();
@@ -26,6 +29,28 @@ public static class Extensions
 
             // Turn on service discovery by default
             http.UseServiceDiscovery();
+        });
+
+        return builder;
+    }
+
+    private static IHostApplicationBuilder ConfigureSentry(this IHostApplicationBuilder builder)
+    {
+        // You'll want to change this to the DSN of your own Sentry project
+        // var sentryDsn = "... your DSN here ...";
+        var sentryDsn = "https://b887218a80114d26a9b1a51c5f88e0b4@o447951.ingest.sentry.io/6601807";
+
+        SentrySdk.Init(options =>
+        {
+            options.Dsn = sentryDsn;
+            options.Debug = builder.Environment.IsDevelopment();
+            options.TracesSampleRate = 1.0; // <-- Not recommended for production
+            options.UseOpenTelemetry(); // <-- Configure Sentry to use OpenTelemetry trace information
+            options.ExperimentalMetrics = new ExperimentalMetricsOptions()
+            {
+                EnableCodeLocations = true,
+                CaptureSystemDiagnosticsMeters = BuiltInSystemDiagnosticsMeters.All
+            };
         });
 
         return builder;
@@ -55,7 +80,8 @@ public static class Extensions
 
                 tracing.AddAspNetCoreInstrumentation()
                        .AddGrpcClientInstrumentation()
-                       .AddHttpClientInstrumentation();
+                       .AddHttpClientInstrumentation()
+                       .AddSentry(); // <-- Send telemetry to Sentry (requires the Sentry.OpenTelemetry package)
             });
 
         builder.AddOpenTelemetryExporters();
