@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
@@ -7,6 +8,7 @@ using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
 using Sentry.OpenTelemetry;
+using Sentry.AspNetCore;
 
 namespace Microsoft.Extensions.Hosting;
 
@@ -14,8 +16,6 @@ public static class Extensions
 {
     public static IHostApplicationBuilder AddServiceDefaults(this IHostApplicationBuilder builder)
     {
-        builder.ConfigureSentry(); // <-- We configure this first to get crash reporting as soon as possible
-
         builder.ConfigureOpenTelemetry();
         
         builder.AddDefaultHealthChecks();
@@ -34,16 +34,18 @@ public static class Extensions
         return builder;
     }
 
-    private static IHostApplicationBuilder ConfigureSentry(this IHostApplicationBuilder builder)
+    public static IWebHostBuilder UseSentryAspire(this IWebHostBuilder builder, string? dsn = null)
     {
         // You'll want to change this to the DSN of your own Sentry project
         // var sentryDsn = "... your DSN here ...";
-        var sentryDsn = "https://b887218a80114d26a9b1a51c5f88e0b4@o447951.ingest.sentry.io/6601807";
+        dsn ??= "https://b887218a80114d26a9b1a51c5f88e0b4@o447951.ingest.sentry.io/6601807";
 
-        SentrySdk.Init(options =>
+        builder.UseSentry(options =>
         {
-            options.Dsn = sentryDsn;
-            options.Debug = builder.Environment.IsDevelopment();
+            options.Dsn = dsn;
+#if DEBUG            
+            options.Debug = true;
+#endif
             options.TracesSampleRate = 1.0; // <-- Not recommended for production
             options.UseOpenTelemetry(); // <-- Configure Sentry to use OpenTelemetry trace information
             options.ExperimentalMetrics = new ExperimentalMetricsOptions()

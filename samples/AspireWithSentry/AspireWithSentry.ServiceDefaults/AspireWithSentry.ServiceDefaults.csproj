@@ -20,6 +20,7 @@
     <PackageReference Include="OpenTelemetry.Instrumentation.Http"/>
     <PackageReference Include="OpenTelemetry.Instrumentation.Runtime"/>
     <PackageReference Include="Sentry.OpenTelemetry"/>
+    <PackageReference Include="Sentry.AspNetCore"/>
   </ItemGroup>
 
 </Project>
