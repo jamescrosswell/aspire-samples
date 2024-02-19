@@ -1,8 +1,15 @@
 var builder = DistributedApplication.CreateBuilder(args);
 
-var apiService = builder.AddProject<Projects.AspireWithSentry_ApiService>("apiservice");
+var sql = builder
+    .AddSqlServerContainer("sql")
+    .AddDatabase("tempdb");
 
-builder.AddProject<Projects.AspireWithSentry_Web>("webfrontend")
+var apiService = builder
+    .AddProject<Projects.AspireWithSentry_ApiService>("apiservice")
+    .WithReference(sql);
+
+builder
+    .AddProject<Projects.AspireWithSentry_Web>("webfrontend")
     .WithReference(apiService);
 
 builder.Build().Run();

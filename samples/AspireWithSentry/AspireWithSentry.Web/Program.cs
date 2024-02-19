@@ -4,7 +4,7 @@ using AspireWithSentry.Web.Components;
 var builder = WebApplication.CreateBuilder(args);
 
 // Send telemetry and crash reporting to Sentry
-builder.WebHost.UseSentryAspire();
+builder.AddSentry();
 
 // Add service defaults & Aspire components.
 builder.AddServiceDefaults();

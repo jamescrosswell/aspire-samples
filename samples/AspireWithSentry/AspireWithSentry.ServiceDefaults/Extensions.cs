@@ -7,8 +7,8 @@ using Microsoft.Extensions.Logging;
 using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
-using Sentry.OpenTelemetry;
 using Sentry.AspNetCore;
+using Sentry.OpenTelemetry;
 
 namespace Microsoft.Extensions.Hosting;
 
@@ -34,14 +34,14 @@ public static class Extensions
         return builder;
     }
 
-    public static IWebHostBuilder UseSentryAspire(this IWebHostBuilder builder)
+    public static WebApplicationBuilder AddSentry(this WebApplicationBuilder builder, Action<SentryAspNetCoreOptions>? configureOptions = null)
     {
 
-        builder.UseSentry(options =>
+        builder.WebHost.UseSentry(options =>
         {
             // You'll want to change this to the DSN of your own Sentry project
             // options.Dsn = "... your DSN here ...";
-            options.Dsn = SentryConstants.DisableSdkDsnValue;
+            options.Dsn = "https://b887218a80114d26a9b1a51c5f88e0b4@o447951.ingest.sentry.io/6601807";
 #if DEBUG            
             options.Debug = true;
 #endif
@@ -52,6 +52,7 @@ public static class Extensions
                 EnableCodeLocations = true,
                 CaptureSystemDiagnosticsMeters = BuiltInSystemDiagnosticsMeters.All
             };
+            configureOptions?.Invoke(options);
         });
 
         return builder;

@@ -1,10 +1,16 @@
+using AspireWithSentry.ApiService;
+using Microsoft.Data.SqlClient;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Send telemetry and crash reporting to Sentry
-builder.WebHost.UseSentryAspire();
+builder.AddSentry();
 
 // Add service defaults & Aspire components.
 builder.AddServiceDefaults();
+
+// Add SQL Client
+builder.AddSqlServerClient("tempdb");
 
 // Add services to the container.
 builder.Services.AddProblemDetails();
@@ -32,7 +38,14 @@ app.MapGet("/weatherforecast", () =>
     return forecast;
 });
 
-app.MapGet("/crashtest", Delegate() => throw new Exception("This is a test exception"));
+app.MapGet("/crashtest", Delegate(SqlConnection connection) =>
+{
+    connection.Open();
+    var command = new SqlCommand(CommandHelper.CommandText, connection);
+    command.ExecuteNonQuery();
+
+    throw new Exception("This is a test exception");
+});
 
 app.MapDefaultEndpoints();
 
