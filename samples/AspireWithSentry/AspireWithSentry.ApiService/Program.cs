@@ -32,6 +32,8 @@ app.MapGet("/weatherforecast", () =>
     return forecast;
 });
 
+app.MapGet("/crashtest", Delegate() => throw new Exception("This is a test exception"));
+
 app.MapDefaultEndpoints();
 
 app.Run();

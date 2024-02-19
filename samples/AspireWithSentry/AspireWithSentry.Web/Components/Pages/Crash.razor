@@ -1,0 +1,28 @@
+@page "/crash"
+@rendermode InteractiveServer
+
+@inject WeatherApiClient WeatherApi
+
+<PageTitle>Crash Test</PageTitle>
+
+<h1>Crash Test</h1>
+
+<p>Click on the buttons below to simulate some exceptions that will show in your Sentry dashboard</p>
+
+<button class="btn btn-primary" @onclick="PageCrashTest">Math is hard</button>
+
+<button class="btn btn-primary" @onclick="() => ApiCrashTest()">APIs are unreliable</button>
+
+@code {
+    private int _currentCount = 0;
+
+    private void PageCrashTest()
+    {
+        _currentCount /= _currentCount;
+    }
+
+    private async Task ApiCrashTest()
+    {
+        await WeatherApi.GetCrashTestAsync();
+    }
+}

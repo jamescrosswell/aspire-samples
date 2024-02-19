@@ -6,6 +6,11 @@ public class WeatherApiClient(HttpClient httpClient)
     {
         return await httpClient.GetFromJsonAsync<WeatherForecast[]>("/weatherforecast") ?? [];
     }
+    
+    public async Task<string> GetCrashTestAsync()
+    {
+        return await httpClient.GetFromJsonAsync<string>("/crashtest") ?? "";
+    }
 }
 
 public record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)

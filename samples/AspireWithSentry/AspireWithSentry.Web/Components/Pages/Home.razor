@@ -2,6 +2,51 @@
 
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
+<h1>Hello, Aspire with Sentry!</h1>
 
-Welcome to your new app.
+<div style="width: 50em; text-align: justify; font-size: 1.4rem">
+    <p>
+        This app demonstrates how you can wire up Aspire to send crash reports and telemetry to Sentry.
+    </p>
+
+    <p>
+        Sentry provides a way to capture and visualize this data across all of your environments (including production).  
+    </p>
+
+    <p>
+        Some of this information, like metrics and traces, is similar to what you see in the Aspire Dashboard. Sentry also has 
+        stuff like crash reporting and the ability to trace events back to specific lines in your source code.  
+    </p>
+    
+@if (SentrySdk.IsEnabled)
+{
+    <h2>Instructions</h2>
+
+    <p>
+        In order for the Sentry .NET SDK to work, it needs the URL of a Sentry instance where it should send data. In Sentry,
+        this is called a DSN.
+    </p>
+    <p>
+        Once you've got a DSN you can provide this in the <code>Extensions.UseSentryAspire</code> method in your Service
+        Defaults project:
+    </p>
+    <pre>
+    builder.UseSentry(options =>
+    {
+        // You'll want to change this to the DSN of your own Sentry project
+        options.Dsn = "... your DSN here ...";
+
+        // ... other options
+    }
+    </pre>
+    <p>
+        Alternatively, you could remove the code where this gets set in <code>Extensions.UseSentryAspire</code> and use
+        configuration bindings to set the DSN for each of your projects individually.
+    </p>
+    <p>
+        You can read
+        <a href="https://docs.sentry.io/platforms/dotnet/guides/aspnetcore/#configure">more about
+            configuring Sentry here</a>.
+    </p>
+}
+</div>
