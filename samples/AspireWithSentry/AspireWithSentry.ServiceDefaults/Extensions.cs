@@ -34,14 +34,14 @@ public static class Extensions
         return builder;
     }
 
-    public static IWebHostBuilder UseSentryAspire(this IWebHostBuilder builder, string? dsn = null)
+    public static IWebHostBuilder UseSentryAspire(this IWebHostBuilder builder)
     {
 
         builder.UseSentry(options =>
         {
             // You'll want to change this to the DSN of your own Sentry project
-            // options.Dsn = dsn ?? "... your DSN here ...";
-            options.Dsn = dsn ?? "https://b887218a80114d26a9b1a51c5f88e0b4@o447951.ingest.sentry.io/6601807";
+            // options.Dsn = "... your DSN here ...";
+            options.Dsn = SentryConstants.DisableSdkDsnValue;
 #if DEBUG            
             options.Debug = true;
 #endif
