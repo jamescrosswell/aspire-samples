@@ -3,14 +3,14 @@ using Microsoft.Data.SqlClient;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Add SQL Client
+builder.AddSqlServerClient("tempdb");
+
 // Send telemetry and crash reporting to Sentry
 builder.AddSentry();
 
 // Add service defaults & Aspire components.
 builder.AddServiceDefaults();
-
-// Add SQL Client
-builder.AddSqlServerClient("tempdb");
 
 // Add services to the container.
 builder.Services.AddProblemDetails();
@@ -40,9 +40,12 @@ app.MapGet("/weatherforecast", () =>
 
 app.MapGet("/crashtest", Delegate(SqlConnection connection) =>
 {
-    connection.Open();
-    var command = new SqlCommand(CommandHelper.CommandText, connection);
-    command.ExecuteNonQuery();
+    using (connection)
+    {
+        connection.Open();
+        var command = new SqlCommand(CommandHelper.CommandText, connection);
+        command.ExecuteNonQuery();
+    }
 
     throw new Exception("This is a test exception");
 });

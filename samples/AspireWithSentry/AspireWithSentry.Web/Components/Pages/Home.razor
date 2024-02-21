@@ -18,17 +18,17 @@
         stuff like crash reporting and the ability to trace events back to specific lines in your source code.  
     </p>
     
-@if (SentrySdk.IsEnabled)
+@if (!SentrySdk.IsEnabled)
 {
     <h2>Instructions</h2>
 
     <p>
-        In order for the Sentry .NET SDK to work, it needs the URL of a Sentry instance where it should send data. In Sentry,
-        this is called a DSN.
+        In order for the Sentry .NET SDK to work, it needs the URL of a Sentry project where it should send data. In 
+        Sentry, this is called a DSN.
     </p>
     <p>
-        Once you've got a DSN you can provide this in the <code>Extensions.UseSentryAspire</code> method in your Service
-        Defaults project:
+        Once you've <a href="https://sentry.io/signup/">got a DSN</a> you can provide this in the 
+        <code>Extensions.UseSentryAspire</code> method in your Service Defaults project:
     </p>
     <pre>
     builder.UseSentry(options =>
@@ -40,13 +40,9 @@
     }
     </pre>
     <p>
-        Alternatively, you could remove the code where this gets set in <code>Extensions.UseSentryAspire</code> and use
-        configuration bindings to set the DSN for each of your projects individually.
-    </p>
-    <p>
         You can read
-        <a href="https://docs.sentry.io/platforms/dotnet/guides/aspnetcore/#configure">more about
-            configuring Sentry here</a>.
+        <a href="https://docs.sentry.io/platforms/dotnet/guides/aspnetcore/#configure">more about configuring Sentry 
+            here</a>.
     </p>
 }
 </div>

@@ -41,7 +41,7 @@ public static class Extensions
         {
             // You'll want to change this to the DSN of your own Sentry project
             // options.Dsn = "... your DSN here ...";
-            options.Dsn = "https://b887218a80114d26a9b1a51c5f88e0b4@o447951.ingest.sentry.io/6601807";
+            options.Dsn = SentryConstants.DisableSdkDsnValue;
 #if DEBUG            
             options.Debug = true;
 #endif
